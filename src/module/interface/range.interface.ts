@@ -1,4 +1,9 @@
-export class CreateTableDto {
+export interface RangeI {
+    from : number;
+    to : number;
+}
+
+interface VisitsTable {
     traceID: string;
     microservice: string;
     service: string;

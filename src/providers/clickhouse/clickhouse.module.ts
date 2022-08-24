@@ -1,8 +1,8 @@
 import {Module} from "@nestjs/common";
 import {ClickHouseModule} from "@depyronick/nestjs-clickhouse";
 import { ConfigService} from "@nestjs/config";
-import {ClickhouseService} from "../../moule/clickhouse.service";
-import {ClickhouseController} from "../../moule/clickhouse.controller";
+import {ClickhouseService} from "../../module/clickhouse.service";
+import {ClickhouseController} from "../../module/clickhouse.controller";
 
 @Module({
     imports: [
