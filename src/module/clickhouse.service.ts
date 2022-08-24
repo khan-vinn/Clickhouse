@@ -36,7 +36,7 @@ export  class ClickhouseService implements OnModuleInit {
               console.log(row);
           },
           complete: (): void => {
-              console.log('поток завершен')
+              console.log('таблица создана')
           },
       });
   }
