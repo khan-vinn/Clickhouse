@@ -2,16 +2,13 @@ import {Body, Controller, Get, Post, Req} from "@nestjs/common";
 import {ClickhouseService} from "./clickhouse.service";
 import {CreateTableDto} from "./dto/create-table.dto";
 import {Request } from "express";
-import {TestDto} from "./dto/test.dto";
 import {RangeI} from "./interface/range.interface";
-import {interval, Observable, tap} from "rxjs";
+import {interval, tap} from "rxjs";
 
 @Controller('api')
 export class ClickhouseController {
-    constructor(private readonly appService: ClickhouseService) {
-    }
-    public batch:TestDto[] = []
-    public date;
+    constructor(private readonly appService: ClickhouseService) {}
+    public batch:CreateTableDto[] = []
     public schedule = interval(20*1000).pipe(tap(()=>{
         console.log('before')
         if (this.batch.length > 0) {
@@ -23,13 +20,17 @@ export class ClickhouseController {
 
     })).subscribe(console.log);
 
-    @Post('log')
-    log(@Body() data: CreateTableDto){
-        this.appService.createLog(data)
+    @Post('system-log')
+    postData(@Body() data){
+        this.batch = [...data, ...this.batch]
+        if (this.batch.length > 10) {
+            this.appService.write(this.batch)
+            this.batch=[]
+        }
     }
 
-    @Get('log')
-    async write(@Req() req: Request) {
+    @Get('system-log')
+    async getData(@Req() req: Request) {
         const page: number = parseInt(req.query?.page as string) || 1;
         const limit: number = parseInt(req.query?.limit as string) || 10;
         const search: string = req.query?.s as string || ""
@@ -40,16 +41,12 @@ export class ClickhouseController {
     }
 
 
+
+
+
     @Post('post')
     writeTable(@Body() data) {
-        // if (batch.length == 0) {
-        //     this.date = new Date().getTime()
-        // }
-        this.batch = [...data, ...this.batch]
-        if (this.batch.length > 50) {
-            this.appService.write(this.batch)
-            this.batch=[]
-        }
+
     }
 
     @Get('create')

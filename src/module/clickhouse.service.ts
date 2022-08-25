@@ -25,8 +25,8 @@ export  class ClickhouseService implements OnModuleInit {
                     data String, 
                     message String, 
                     eventDate DateTime DEFAULT NOW()
-                ) engine=MergeTree() 
-                partition by toYYYYMMDDhhmmss(eventDate) 
+                ) ENGINE=MergeTree() 
+                PARTITION BY toYYYYMMDDhhmmss(eventDate) 
                 ORDER BY (eventDate)`.trim())
           .subscribe({
           error: (err: any): void => {
@@ -41,28 +41,43 @@ export  class ClickhouseService implements OnModuleInit {
       });
   }
 
+  write(data) {
+        this.analyticService.insert('system_log', data)
+            .subscribe({
+                error: (err: any): void => {
+                    console.error('ERROR', err)
+                },
+                next: (row): void => {
+                    console.log(row);
+                },
+                complete: (): void => {
+                    console.log('поток завершен')
+                },
+            });
+  }
+
   async get(page: number, limit: number, search: string, range: RangeI, offset: number) {
 
         let options = `
-                    SELECT * FROM log 
+                    SELECT * FROM system_log 
                     WHERE eventDate BETWEEN ${range.from} AND ${range.to} 
                     ORDER BY(eventDate, microservice, type) 
                     LIMIT ${limit} OFFSET ${offset}`.trim()
 
         let total = `
-                    SELECT COUNT(*) AS totals FROM log 
+                    SELECT COUNT(*) AS totals FROM system_log 
                     WHERE eventDate BETWEEN ${range.from} AND ${range.to}`.trim()
 
         if (search) {
             options = `
-                    SELECT * FROM log 
+                    SELECT * FROM system_log 
                     WHERE (traceID LIKE '%${search}%' ) 
                     AND (eventDate BETWEEN ${range.from} AND ${range.to})
                     ORDER BY(microservice, type) 
                     LIMIT ${limit} OFFSET ${offset}`.trim()
 
             total = `
-                    SELECT COUNT(*) AS totals FROM log 
+                    SELECT COUNT(*) AS totals FROM system_log 
                     WHERE (traceID LIKE '%${search}%') 
                     AND (eventDate BETWEEN ${range.from} AND ${range.to})`.trim()
         }
@@ -91,23 +106,12 @@ export  class ClickhouseService implements OnModuleInit {
   }
 
 
-  createLog(data) {
-      this.analyticService.insert('log', data)
-          .subscribe({
-              error: (err: any): void => {
-                  console.error('ERROR', err)
-              },
-              next: (row): void => {
-                  console.log(row);
-              },
-              complete: (): void => {
-                  console.log('поток завершен')
-              },
-          });
-  }
 
-  write(batch) {
-        this.analyticService.insert('test',batch )
+
+
+
+  writeTest(batch) {
+        this.analyticService.insert('task',batch )
             .subscribe({
                 error: (err: any): void => {
                     console.error('ERROR', err)
@@ -121,7 +125,7 @@ export  class ClickhouseService implements OnModuleInit {
             });
   }
   create() {
-        this.analyticService.query('CREATE table test (`traceID` String, `data` String, `eventDate` DateTime DEFAULT NOW() )engine=MergeTree() partition by toYYYYMMDDhhmmss(eventDate) ORDER BY (eventDate) ')
+        this.analyticService.query('CREATE table task (`traceID` String, `data` String, `eventDate` DateTime DEFAULT NOW() )engine=MergeTree() partition by toYYYYMMDDhhmmss(eventDate) ORDER BY (eventDate) ')
             .subscribe({
                 error: (err: any): void => {
                     console.error('ERROR', err)
