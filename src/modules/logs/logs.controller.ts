@@ -1,4 +1,4 @@
-import {Controller,} from "@nestjs/common";
+import {Controller} from "@nestjs/common";
 import {Request } from "express";
 import {LogsService} from "./logs.service";
 import {RangeI} from "./interface/range.interface";
