@@ -1,9 +1,6 @@
 import {Module} from "@nestjs/common";
 import {ClickHouseModule} from "@depyronick/nestjs-clickhouse";
 import {ConfigService} from "@nestjs/config";
-import {ClickhouseService} from "../../module/clickhouse.service";
-import {ClickhouseController} from "../../module/clickhouse.controller";
-import {TaskModule} from "../../module/bull/task.module";
 
 @Module({
     imports: [
@@ -18,7 +15,7 @@ import {TaskModule} from "../../module/bull/task.module";
             })
         }),
     ],
-    providers: [ClickhouseService],
-    controllers: [ClickhouseController]
+    providers: [],
+    controllers: [],
 })
 export class ClickhouseDatabaseModule {}

@@ -1,8 +1,7 @@
 import {Module} from "@nestjs/common";
 import {ConfigModule} from "@nestjs/config";
-import {ClickhouseDatabaseModule} from "./providers/clickhouse/clickhouse.module";
-import {TaskModule} from "./module/bull/task.module";
-import {TaskModule2} from "./module/task/task.module";
+import {LogsModule} from "./modules/logs/logs.module";
+import {BatchTimeTaskModule} from "./modules/batchTimeTask/batchTimeTask.module";
 
 @Module({
     imports: [
@@ -10,8 +9,8 @@ import {TaskModule2} from "./module/task/task.module";
             isGlobal: true,
             envFilePath: [process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env'],
         }),
-        ClickhouseDatabaseModule,
-        TaskModule2,
+        LogsModule,
+        BatchTimeTaskModule,
     ],
     controllers: [],
     providers: []
