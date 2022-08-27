@@ -18,7 +18,7 @@ import {BatchTimeTaskService} from "./batchTimeTask.sevice";
             })
         }),
         BullModule.registerQueue({
-            name: 'QUEUE_TASK',
+            name: 'LOG_TASK',
         }),
         LogsModule,
     ],

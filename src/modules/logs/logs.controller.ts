@@ -1,4 +1,4 @@
-import {Controller} from "@nestjs/common";
+import {Controller, Get, Post} from "@nestjs/common";
 import {Request } from "express";
 import {LogsService} from "./logs.service";
 import {RangeI} from "./interface/range.interface";
@@ -10,12 +10,12 @@ export class LogsController {
     constructor(private readonly logsService: LogsService) {}
 
 
-    @MessagePattern('post-system-log')
+    @Post('post-system-log')
     postData(@Payload() req: ArrayValidation ){
         this.logsService.handleBatch(req.logs)
     }
 
-    @MessagePattern('get-system-log')
+    @Get('get-system-log')
     async getData(@Payload() req: Request) {
         const page: number = parseInt(req.query?.page as string) || 1;
         const limit: number = parseInt(req.query?.limit as string) || 10;

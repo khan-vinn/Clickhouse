@@ -41,29 +41,28 @@ export  class LogsService implements OnModuleInit {
                     console.log(row);
                 },
                 complete: (): void => {
-                    console.log('таблица создана')
+                    console.log('создание таблицы')
                 },
             });
     }
 
     async handleBatch(data) {
-        let batch;
-        const redisData = await this.redis.get('logs')
-        if (redisData) {
-            batch = JSON.parse(redisData)
-        }
-        console.log('length', batch?.length)
+        let redisData = await this.redis.get('logs')
+        let parseRedisData = JSON.parse(redisData)
+        let batch = parseRedisData ? [...parseRedisData, ...data] : [...data]
 
-        if (batch?.length >=10) {
-            console.log('SEND')
-            const currentDate = new Date().getTime()
+        console.log('количество логов', batch?.length)
 
+        if (batch?.length >= 10) {
+            console.log('количество логов записсанных БД', batch?.length)
+            const currentTime = new Date().getTime()
+
+            await this.write(batch)
             await this.redis.del('logs')
-            await this.redis.set('logs', JSON.stringify(data))
-            await this.redis.set('lastBatchCreationDate', currentDate)
-        } else {
-            const newBatch = batch?.length ? [...batch, ...data] : data
-            await this.redis.set('logs', JSON.stringify(newBatch))
+            await this.redis.set('lastBatchCreationDate', currentTime)
+        }
+        else {
+            await this.redis.set('logs', JSON.stringify(batch))
         }
     }
 

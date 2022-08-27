@@ -4,7 +4,7 @@ import {BatchTimeTaskService} from "./batchTimeTask.sevice";
 import {Job} from "bull";
 
 @Injectable()
-@Processor('QUEUE_TASK')
+@Processor('LOG_TASK')
 export class BatchTimeProcess {
     constructor(private readonly batchTimeService: BatchTimeTaskService) {}
 
