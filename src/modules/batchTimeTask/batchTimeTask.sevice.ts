@@ -14,7 +14,7 @@ export class BatchTimeTaskService {
     ) {}
 
     async onModuleInit() {
-        console.log("test")
+        console.log("bull")
         await this.queueTask();
         // await this.taskQueue.removeRepeatableByKey('__default__:batchTimeTask::10000')
         // console.log(await this.taskQueue.getRepeatableJobs())

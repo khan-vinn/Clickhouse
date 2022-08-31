@@ -10,12 +10,12 @@ export class LogsController {
     constructor(private readonly logsService: LogsService) {}
 
 
-    @Post('post-system-log')
+    @MessagePattern('post-system-log')
     postData(@Payload() req: ArrayValidation ){
         this.logsService.handleBatch(req.logs)
     }
 
-    @Get('get-system-log')
+    @MessagePattern('get-system-log')
     async getData(@Payload() req: Request) {
         const page: number = parseInt(req.query?.page as string) || 1;
         const limit: number = parseInt(req.query?.limit as string) || 10;
